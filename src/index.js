@@ -11,8 +11,8 @@ module.exports = function (layoutData, opts) {
         scroller: 'div',
         slider: 'div',
         view: 'div',
-        text: 'span',
-        picture: 'img'
+        text: 'text',
+        picture: 'image'
     };
 
     // 事件方法名称转换
