@@ -2,7 +2,7 @@
 
 ### 运行机制
 
-我们会提供开发者一些数据和能力（ lint 等），开发者可以运用这些数据和能力在我们所提供的虚拟容器里执行自己的动态脚本代码，我们会拿到这段代码运行后返回的模板渲染所需的数据，最后渲染开发者编写的 [xtemplate](http://web.npm.alibaba-inc.com/package/xtemplate) 模板得到输出代码返回给开发者。
+我们会提供开发者一些数据和能力（ lint 等），开发者可以运用这些数据和能力在我们所提供的虚拟容器里执行自己的动态脚本代码，我们会拿到这段代码运行后返回的模板渲染所需的数据，最后渲染开发者编写的 [xtemplate](https://www.npmjs.com/package/xtemplate) 模板得到输出代码返回给开发者。
 
 整个运行环境是在 Node 虚拟机里，我们使用 [vm2](https://github.com/patriksimek/vm2) 来实现这个环境，这里面没有内置的 node 模块和三方包可以调用，具体的开发文档见下面动态代码章节。
 
@@ -187,7 +187,7 @@ module.exports = function(layoutData, options) {
 }
 ```
 
-除此外，各个节点可能还会有数据绑定和事件相关的字段，如需要可参考此[文档](https://yuque.antfin-inc.com/design2code/develop/data-json) 中的 `dataBindingStore` 和 `scriptStore`  进行接入。
+除此外，各个节点可能还会有数据绑定和事件相关的字段，如需要可参考此[文档](https://imgcook.taobao.org/docs?slug=module-transform-json) 中的 `dataBindingStore` 和 `scriptStore`  进行接入。
 
 
 #### options
