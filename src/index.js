@@ -152,12 +152,12 @@ module.exports = function (layoutData, opts) {
         let _rMockData =
             Object.keys(mockDataOptions).length > 0
                 ? helper.parser(
-                `const mockData = ${JSON.stringify(mockDataOptions, null, 2)};`
+                `const mockData = ${JSON.stringify(mockDataOptions, null, 4)};`
                 )
                 : [];
 
         let _rScript = generateScript(originJson, {
-            indent: 0,
+            indent: 2,
             eventsOn: true
         });
 
@@ -189,6 +189,7 @@ module.exports = function (layoutData, opts) {
          * @return result css的partsJson
          */
         function generateStyle(cssStore) {
+            indent = 2;
             let result = [];
             let remResult = [
                 _line(
@@ -204,7 +205,7 @@ module.exports = function (layoutData, opts) {
                             _o,
                             v.styleValue[_o]
                         )};`;
-                        styleCssLine.push(_line(cssLineString, {indent: {tab: 1}}));
+                        styleCssLine.push(_line(cssLineString, {indent: {tab: indent + 2}}));
                         if (htmlFontsize) {
                             let cssLineRemString = `${_.kebabCase(_o)}: ${cssValue(
                                 _o,
@@ -212,21 +213,21 @@ module.exports = function (layoutData, opts) {
                                 htmlFontsize
                             )};`;
                             styleRemCssLine.push(
-                                _line(cssLineRemString, {indent: {tab: 1}})
+                                _line(cssLineRemString, {indent: {tab: indent + 2}})
                             );
                         }
                     }
                 }
                 result = result.concat(
-                    _line(`.${v.styleName} {`),
+                    _line(`.${v.styleName} {`, {indent: {tab: indent}}),
                     styleCssLine,
-                    _line('}')
+                    _line('}', {indent: {tab: indent}})
                 );
                 if (styleRemCssLine.length > 0) {
                     remResult = remResult.concat(
-                        _line(`.${v.styleName} {`),
+                        _line(`.${v.styleName} {`, {indent: {tab: indent}}),
                         styleRemCssLine,
-                        _line('}')
+                        _line('}', {indent: {tab: indent}})
                     );
                 }
             });
@@ -271,19 +272,19 @@ module.exports = function (layoutData, opts) {
             let dataFunctionScript =
                 _rMockData && _rMockData.length
                     ? [].concat(
-                    _line('data() {', {indent: {tab: indent + 1}}),
-                    _line('return mockData;', {indent: {tab: indent + 2}}),
-                    _line('},', {indent: {tab: indent + 1}})
+                    _line('data() {', {indent: {tab: indent + 2}}),
+                    _line('return mockData;', {indent: {tab: indent + 4}}),
+                    _line('},', {indent: {tab: indent + 2}})
                     )
                     : [];
             let methodScript = [].concat(
-                _line('methods: {', {indent: {tab: indent + 1}}),
+                _line('methods: {', {indent: {tab: indent + 2}}),
                 ...methodsFunction,
-                _line('}', {indent: {tab: indent + 1}})
+                _line('}', {indent: {tab: indent + 2}})
             );
             result = result.concat(
                 _line('export default {', {indent: {tab: indent}}),
-                _line('name: "DvcComponent",', {indent: {tab: indent + 1}}),
+                _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
                 dataFunctionScript,
                 ...lifeCycleFunction,
                 methodScript,
@@ -313,14 +314,14 @@ module.exports = function (layoutData, opts) {
 
                 let className = _.kebabCase(json.attrs && json.attrs.className);
                 let styleParts = _line(`class="${className}"`, {
-                    indent: {tab: indent + 1}
+                    indent: {tab: indent + 4}
                 });
                 let eventParts = [];
 
                 // 过滤出当前节点是否有事件
                 scriptsStore.forEach(v => {
                     let eventRet = generateEvent(v, {
-                        indent: 1
+                        indent: 2
                     });
                     if (eventRet && v.belongId == json.id) {
                         if (['destroy', 'init'].indexOf(v.eventType) != -1) {
@@ -333,7 +334,7 @@ module.exports = function (layoutData, opts) {
                             eventParts.push(
                                 _line(
                                     `@${EVENT_MAP[v.eventType] || v.eventType}="${v.scriptName}"`,
-                                    {indent: {tab: indent + 1}}
+                                    {indent: {tab: indent + 4}}
                                 )
                             );
                         }
@@ -396,6 +397,7 @@ module.exports = function (layoutData, opts) {
                     styleValue: json.style
                 });
 
+                indent = indent + 1;
                 switch (type) {
                     case 'text':
                         let textValue = createBindingValue(dataBinding);
@@ -411,7 +413,7 @@ module.exports = function (layoutData, opts) {
                             );
                             result = result.concat(_line('>', {indent: {tab: indent}}));
                             result = result.concat(
-                                _line(textValue, {indent: {tab: indent + 1}}),
+                                _line(textValue, {indent: {tab: indent + 2}}),
                                 _line(`</${changeTypeName}>`, {indent: {tab: indent}})
                             );
                         } else {
@@ -434,7 +436,7 @@ module.exports = function (layoutData, opts) {
                         result = result.concat(
                             _line(`<${changeTypeName}`, {indent: {tab: indent}}),
                             styleParts,
-                            _line(srcAttr, {indent: {tab: indent + 1}})
+                            _line(srcAttr, {indent: {tab: indent + 3}})
                         );
                         if (eventParts && eventParts.length > 0) {
                             result = result.concat(eventParts);
@@ -548,14 +550,14 @@ module.exports = function (layoutData, opts) {
                 return null;
             } else {
                 let eventContentParts = _line(funcInner.content, {
-                    indent: {tab: indent + 1}
+                    indent: {tab: indent + 5}
                 });
                 let eventName =
                     EVENT_NAME_MAP[scriptJson.scriptName] || scriptJson.scriptName;
                 if (['destroy', 'init'].indexOf(scriptJson.eventType) != -1) {
                     eventName = EVENT_NAME_MAP[scriptJson.eventType];
                 } else {
-                    indent = indent + 1;
+                    indent = indent + 4;
                 }
 
                 let eventParts = [].concat(
