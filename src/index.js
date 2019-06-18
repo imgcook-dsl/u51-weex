@@ -149,6 +149,10 @@ module.exports = function (layoutData, opts) {
         });
 
         let mockDataOptions = generateMockData(mockDataStore);
+        let tmp = mockDataOptions.data;
+        mockDataOptions.data = {};
+        mockDataOptions.data.type = 'Object';
+        mockDataOptions.data.default = tmp;
         let _rMockData =
             Object.keys(mockDataOptions).length > 0
                 ? helper.parser(
@@ -269,6 +273,25 @@ module.exports = function (layoutData, opts) {
             let indent = options.indent || 0;
             let result = [];
 
+            /*            let propsScript =
+                            Object.keys(mockDataOptions).length > 0 ?
+                                [].concat(
+                                    _line('props :{', {indent: {tab: indent + 2}}),
+                                    _line('data: {', {indent: {tab: indent + 4}}),
+                                    _line('type: Object,', {indent: {tab: indent + 6}}),
+                                    _line('default: {', {indent: {tab: indent + 6}}),
+                                    _line(mockDataOptions, {indent: {tab: indent + 8}}),
+                                    _line('}', {indent: {tab: indent + 8}}),
+                                    _line('}', {indent: {tab: indent + 6}}),
+                                    _line('}', {indent: {tab: indent + 4}})
+                                ) : [];
+                        console.log(propsScript);*/
+            let prop = {props: mockDataOptions};
+            let propsScript = _line(
+                `props: ${JSON.stringify(mockDataOptions, null, 4)}`,
+                {indent: {tab: indent}}
+            );
+
             let dataFunctionScript =
                 _rMockData && _rMockData.length
                     ? [].concat(
@@ -285,9 +308,10 @@ module.exports = function (layoutData, opts) {
             result = result.concat(
                 _line('export default {', {indent: {tab: indent}}),
                 _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
-                dataFunctionScript,
+                // dataFunctionScript,
                 ...lifeCycleFunction,
                 methodScript,
+                propsScript,
                 _line('}', {indent: {tab: indent}})
             );
 
@@ -298,7 +322,7 @@ module.exports = function (layoutData, opts) {
             let indent = options.indent || 0;
             let eventsOn = options.eventsOn || false;
             let result = [];
-            if (!!json.length && typeof json != 'string') {
+            if (!!json.length && typeof json != 'string') {//判断是否数组
                 json.forEach(v => {
                     let _i = generateXML(v, {
                         indent: indent,
