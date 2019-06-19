@@ -288,12 +288,13 @@ module.exports = function (layoutData, opts) {
                                     _line('}', {indent: {tab: indent + 4}})
                                 ) : [];
                         console.log(propsScript);*/
-            let prop = {props: mockDataOptions};
-            let propsScript = _line(
-                `props: ${JSON.stringify(mockDataOptions, null, 4)}`,
-                {indent: {tab: indent}}
+            let propsScripts = helper.parser(JSON.stringify(mockDataOptions, null, 4));
+            propsScripts.shift();
+            propsScripts.unshift(
+                _line('props: {')
             );
-
+            let propsScript = utils.indentTab(propsScripts, 4) ;
+            
             let dataFunctionScript =
                 _rMockData && _rMockData.length
                     ? [].concat(
@@ -305,7 +306,7 @@ module.exports = function (layoutData, opts) {
             let methodScript = [].concat(
                 _line('methods: {', {indent: {tab: indent + 2}}),
                 ...methodsFunction,
-                _line('}', {indent: {tab: indent + 2}})
+                _line('},', {indent: {tab: indent + 2}})
             );
             result = result.concat(
                 _line('export default {', {indent: {tab: indent}}),
