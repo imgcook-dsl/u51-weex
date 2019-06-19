@@ -297,7 +297,7 @@ module.exports = function (layoutData, opts) {
                 ...methodsFunction,
                 _line('},', {indent: {tab: indent + 2}})
             );
-            result = result.concat(
+            let u51WeexScript = result.concat(
                 _line('export default {', {indent: {tab: indent}}),
                 _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
                 // dataFunctionScript,//忽略data()方法
@@ -308,17 +308,17 @@ module.exports = function (layoutData, opts) {
             );
 
             //imgcook平台只识别data()方法
-            let displayPanelResult = result.concat(
+            let displayPanelResult = [].concat(
                 _line('export default {', {indent: {tab: indent}}),
                 _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
                 dataFunctionScript,
                 ...lifeCycleFunction,
                 methodScript,
-                propsScript,
+                // propsScript,
                 _line('}', {indent: {tab: indent}})
             );
 
-            return {_rScript: result, _rDisplayPanelScript: displayPanelResult};
+            return {_rScript: u51WeexScript, _rDisplayPanelScript: displayPanelResult};
         }
 
         function generateXML(json, options) {
