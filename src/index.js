@@ -55,8 +55,8 @@ module.exports = function (layoutData, opts) {
         _line('</template>', {indent: {tab: 0}}),
         _line('', {indent: {tab: 0}}),
         _line('<script>', {indent: {tab: 0}}),
-        // ...dslMessage._rMockData,
-        ...dslMessage._rScript,
+        ...dslMessage._rMockData,
+        ...dslMessage._rDisplayPanelScript,
         _line('</script>', {indent: {tab: 0}}),
         _line('<style scoped>', {indent: {tab: 0}}),
         ...dslMessage._rStyle,
@@ -69,8 +69,8 @@ module.exports = function (layoutData, opts) {
         _line('</template>', {indent: {tab: 0}}),
         _line('', {indent: {tab: 0}}),
         _line('<script>', {indent: {tab: 0}}),
-        // ...dslMessage._rMockData,
-        ...dslMessage._rScript,
+        ...dslMessage._rMockData,
+        ...dslMessage._rDisplayPanelScript,
         _line('</script>', {indent: {tab: 0}}),
         _line('<style scoped>', {indent: {tab: 0}}),
         ...dslMessage._rRemStyle,
@@ -149,6 +149,7 @@ module.exports = function (layoutData, opts) {
         });
 
         let mockDataOptions = generateMockData(mockDataStore);
+        let rMockData = JSON.parse(JSON.stringify(mockDataOptions));
         if (Object.keys(mockDataOptions).length > 0) {
             let tmp = mockDataOptions.data;
             mockDataOptions.data = {};
@@ -156,13 +157,13 @@ module.exports = function (layoutData, opts) {
             mockDataOptions.data.default = tmp;
         }
         let _rMockData =
-            Object.keys(mockDataOptions).length > 0
+            Object.keys(rMockData).length > 0
                 ? helper.parser(
-                `const mockData = ${JSON.stringify(mockDataOptions, null, 4)};`
+                `const mockData = ${JSON.stringify(rMockData, null, 4)};`
                 )
                 : [];
 
-        let _rScript = generateScript(originJson, {
+        let {_rScript, _rDisplayPanelScript} = generateScript(originJson, {
             indent: 2,
             eventsOn: true
         });
@@ -185,6 +186,7 @@ module.exports = function (layoutData, opts) {
             _rXML,
             _rMockData,
             _rScript,
+            _rDisplayPanelScript,
             _rStyle,
             _rRemStyle
         };
@@ -275,19 +277,6 @@ module.exports = function (layoutData, opts) {
             let indent = options.indent || 0;
             let result = [];
 
-            /*            let propsScript =
-                            Object.keys(mockDataOptions).length > 0 ?
-                                [].concat(
-                                    _line('props :{', {indent: {tab: indent + 2}}),
-                                    _line('data: {', {indent: {tab: indent + 4}}),
-                                    _line('type: Object,', {indent: {tab: indent + 6}}),
-                                    _line('default: {', {indent: {tab: indent + 6}}),
-                                    _line(mockDataOptions, {indent: {tab: indent + 8}}),
-                                    _line('}', {indent: {tab: indent + 8}}),
-                                    _line('}', {indent: {tab: indent + 6}}),
-                                    _line('}', {indent: {tab: indent + 4}})
-                                ) : [];
-                        console.log(propsScript);*/
             let propsScripts = helper.parser(JSON.stringify(mockDataOptions, null, 4));
             propsScripts.shift();
             propsScripts.unshift(
@@ -311,14 +300,25 @@ module.exports = function (layoutData, opts) {
             result = result.concat(
                 _line('export default {', {indent: {tab: indent}}),
                 _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
-                // dataFunctionScript,
+                // dataFunctionScript,//忽略data()方法
                 ...lifeCycleFunction,
                 methodScript,
                 propsScript,
                 _line('}', {indent: {tab: indent}})
             );
 
-            return result;
+            //imgcook平台只识别data()方法
+            let displayPanelResult = result.concat(
+                _line('export default {', {indent: {tab: indent}}),
+                _line('name: "DvcComponent",', {indent: {tab: indent + 2}}),
+                dataFunctionScript,
+                ...lifeCycleFunction,
+                methodScript,
+                propsScript,
+                _line('}', {indent: {tab: indent}})
+            );
+
+            return {result, displayPanelResult};
         }
 
         function generateXML(json, options) {
