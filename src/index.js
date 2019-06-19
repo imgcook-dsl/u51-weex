@@ -282,8 +282,8 @@ module.exports = function (layoutData, opts) {
             propsScripts.unshift(
                 _line('props: {')
             );
-            let propsScript = utils.indentTab(propsScripts, 4) ;
-            
+            let propsScript = utils.indentTab(propsScripts, 4);
+
             let dataFunctionScript =
                 _rMockData && _rMockData.length
                     ? [].concat(
@@ -318,7 +318,7 @@ module.exports = function (layoutData, opts) {
                 _line('}', {indent: {tab: indent}})
             );
 
-            return {result, displayPanelResult};
+            return {_rScript: result, _rDisplayPanelScript: displayPanelResult};
         }
 
         function generateXML(json, options) {
