@@ -44,7 +44,7 @@ module.exports = function (layoutData, opts) {
     let dslMessage = genertePartJson(layoutData);
     renderData = {
         template: printer(dslMessage._rXML),
-        mockDataScript: printer(dslMessage._rMockData),
+        // mockDataScript: printer(dslMessage._rMockData),
         script: printer(dslMessage._rScript),
         style: printer(dslMessage._rStyle)
     };
@@ -55,7 +55,7 @@ module.exports = function (layoutData, opts) {
         _line('</template>', {indent: {tab: 0}}),
         _line('', {indent: {tab: 0}}),
         _line('<script>', {indent: {tab: 0}}),
-        ...dslMessage._rMockData,
+        // ...dslMessage._rMockData,
         ...dslMessage._rScript,
         _line('</script>', {indent: {tab: 0}}),
         _line('<style scoped>', {indent: {tab: 0}}),
@@ -69,7 +69,7 @@ module.exports = function (layoutData, opts) {
         _line('</template>', {indent: {tab: 0}}),
         _line('', {indent: {tab: 0}}),
         _line('<script>', {indent: {tab: 0}}),
-        ...dslMessage._rMockData,
+        // ...dslMessage._rMockData,
         ...dslMessage._rScript,
         _line('</script>', {indent: {tab: 0}}),
         _line('<style scoped>', {indent: {tab: 0}}),
@@ -149,10 +149,12 @@ module.exports = function (layoutData, opts) {
         });
 
         let mockDataOptions = generateMockData(mockDataStore);
-        let tmp = mockDataOptions.data;
-        mockDataOptions.data = {};
-        mockDataOptions.data.type = 'Object';
-        mockDataOptions.data.default = tmp;
+        if (Object.keys(mockDataOptions).length > 0) {
+            let tmp = mockDataOptions.data;
+            mockDataOptions.data = {};
+            mockDataOptions.data.type = 'Object';
+            mockDataOptions.data.default = tmp;
+        }
         let _rMockData =
             Object.keys(mockDataOptions).length > 0
                 ? helper.parser(
