@@ -278,10 +278,12 @@ module.exports = function (layoutData, opts) {
             let result = [];
 
             let propsScripts = helper.parser(JSON.stringify(mockDataOptions, null, 4));
-            propsScripts.shift();
-            propsScripts.unshift(
-                _line('props: {')
-            );
+            if (propsScripts.length > 0) {
+                propsScripts.shift();
+                propsScripts.unshift(
+                    _line('props: {')
+                );
+            }
             let propsScript = utils.indentTab(propsScripts, 4);
 
             let dataFunctionScript =
