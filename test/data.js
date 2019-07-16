@@ -1632,6 +1632,12 @@ const data = {
       type: 'custom'
     },
     {
+      id: '6aabf5ca7c2c',
+      name: 'clickContentHandle',
+      content:'',
+      type: 'custom'
+    },
+    {
       id: '120270c0d279',
       name: 'titleClick',
       content:
@@ -1641,6 +1647,7 @@ const data = {
   ],
   modStyleConfig: { designWidth: 750, designHeight: 1334, viewportWidth: 375 },
   eventStore: [
+    { belongId: 'Image-3', scriptId: '6aabf5ca7c2c', type: 'onClick' },
     { belongId: 'Image-12', scriptId: '6aabf5ca7c2e', type: 'onClick' },
     { belongId: 'Text-11', scriptId: '120270c0d279', type: 'onClick' }
   ],

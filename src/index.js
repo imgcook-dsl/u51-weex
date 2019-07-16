@@ -576,9 +576,10 @@ module.exports = function (layoutData, opts) {
         function generateEvent(scriptJson, options) {
             let indent = options.indent || 0;
             let funcInner = parseFunction(scriptJson);
-            if (!funcInner.content) {
+            //解决方法体为空时不生成方法的问题
+/*            if (!funcInner.content) {
                 return null;
-            } else {
+            } else {*/
                 let eventContentParts = _line(funcInner.content, {
                     indent: {tab: indent + 5}
                 });
@@ -599,7 +600,7 @@ module.exports = function (layoutData, opts) {
                 );
                 // console.log('eventParts', eventParts);
                 return eventParts;
-            }
+            // }
 
             function parseFunction(json) {
                 let args = [];
